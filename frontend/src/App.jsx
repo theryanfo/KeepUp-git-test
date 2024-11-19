@@ -1,5 +1,4 @@
 import { useState } from 'react'
-
 import './App.css'
 
 // import React from 'react';
@@ -7,16 +6,18 @@ import './App.css'
 // import BlockedArtists from './BlockedArtists';
 // import BlockedTracks from './BlockedTracks';
 import GeneratePlaylistButton from './GeneratePlaylistButton';
-import TestButton from './TestButton';
+// import TestButton from './TestButton';
 // import SearchArtists from './SearchArtists';
 // import SearchTracks from './SearchTracks';
 
-const MainContainer = () => {
+const App = () => {
   return (
     <div className="main-container">
+      
+      
+      {/* 
       <TestButton />
 
-      {/* 
       <NewPlaylist />
       <BlockedArtists />
       <BlockedTracks />
@@ -30,4 +31,4 @@ const MainContainer = () => {
   );
 };
 
-export default MainContainer;
+export default App;
