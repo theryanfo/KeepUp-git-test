@@ -1,4 +1,4 @@
-from flask import Flask, request, url_for, session, redirect, jsonify
+from flask import Flask, make_response, request, url_for, session, redirect, jsonify
 from flask_cors import CORS
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
@@ -8,14 +8,20 @@ import time
 import random
 
 load_dotenv()
-
+MAIN_REDIRECT_URL = "http://localhost:5173"
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=MAIN_REDIRECT_URL)
 
 app.secret_key = os.getenv("SECRET_KEY")
 app.config['SESSION_COOKIE_NAME'] = 'spotify-keepup-session'
 TOKEN_INFO = "token_info"
 
+
+@app.after_request
+def apply_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
 
 # App Routes
 
@@ -28,7 +34,7 @@ def test():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(os.getenv("MAIN_REDIRECT_URL"))
+    return jsonify({"message": "Logged out successfully"})
 
 
 @app.route('/login')
@@ -44,13 +50,19 @@ def redirectPage():
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code, as_dict=True)
     session[TOKEN_INFO] = token_info
+    print(session)
     
     if TOKEN_INFO in session:
         print("SESSION TOKEN PRESENT")
     else:
         print("NO SESSION TOKEN FOUND")
 
-    return redirect(os.getenv("MAIN_REDIRECT_URL"))
+    response = make_response(jsonify({'url': 'http://localhost:5173/'}))
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
+    # return redirect(os.getenv("MAIN_REDIRECT_URL"))
+    # return jsonify({'url': 'http://localhost:5173/'})
 
 
 
