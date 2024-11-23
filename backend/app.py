@@ -152,6 +152,19 @@ def artistsYouLike():
     return jsonify(artists_to_use)
 
 
+@app.route('/createPlaylist')
+def createPlaylist():
+    try:
+        token_info = get_token()
+    except:
+        print("USER NOT LOGGED IN")
+        return redirect("/login")
+    
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    user_id = sp.current_user()['id']
+    sp.user_playlist_create(user=user_id, name="KeepUp", public=False, collaborative=False)
+    return jsonify({"message": "playlist should be created now"})
+
 # Helper Functions
 
 def create_spotify_oauth():
