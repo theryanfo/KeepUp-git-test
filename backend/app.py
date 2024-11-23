@@ -151,6 +151,20 @@ def artistsYouLike():
     
     return jsonify(artists_to_use)
 
+# testing version
+@app.route('/getTracksFromArtists')
+def getTracksFromArtists():
+    try:
+        token_info = get_token()
+    except:
+        print("USER NOT LOGGED IN")
+        return redirect("/login")   
+
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    tracks = sp.current_user_saved_tracks(limit=5)
+
+    return tracks
+
 
 @app.route('/createPlaylist')
 def createPlaylist():
@@ -162,8 +176,38 @@ def createPlaylist():
     
     sp = spotipy.Spotify(auth=token_info['access_token'])
     user_id = sp.current_user()['id']
-    sp.user_playlist_create(user=user_id, name="KeepUp", public=False, collaborative=False)
-    return jsonify({"message": "playlist should be created now"})
+    playlist_id = sp.user_playlist_create(user=user_id, name="KeepUp", public=False, collaborative=False)["id"]
+    
+
+    # tracks = ["0sPBKK9KTOmxIraDco7s3g", "3KmSMUwyrakryureTNI4U8", "2aBelqgKe00KNxc38vXmfQ"]
+    # sp.user_playlist_add_tracks(user_id, playlist_id, tracks)
+    
+    return jsonify({"playlist_id": playlist_id})
+
+
+@app.route('/addToPlaylist')
+def addToPlaylist():
+    try:
+        token_info = get_token()
+    except:
+        print("USER NOT LOGGED IN")
+        return redirect("/login")
+    
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    user_id = sp.current_user()['id']
+    playlist_id = "1odL3hqdHz7OLpNuSCIPmY"
+    
+
+    tracks = ["spotify:track:76QV2O1M2RQ2Hr7CE9FZYn", 
+              "spotify:track:3hO9ffiClRgUDtaVmjhlUK", 
+              "spotify:track:6ZJshGOUgjgX714b8STRrs"]
+
+    #tracks = ["0sPBKK9KTOmxIraDco7s3g", "3KmSMUwyrakryureTNI4U8", "2aBelqgKe00KNxc38vXmfQ"]
+
+    retval = sp.playlist_add_items(playlist_id, tracks)
+    
+    return jsonify({"message": "songs should be added", "return_val": retval})    
+
 
 # Helper Functions
 
