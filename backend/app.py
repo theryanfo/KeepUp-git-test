@@ -164,8 +164,19 @@ def getTracksFromArtists():
     liked_ids = getLiked()
     liked_ids = [track["track"]["id"] for track in liked_ids]
 
-    # test artist values. Replace with request body retrieval / URL data
-    artists = ["2h93pZq0e7k5yf4dywlkpM", "1PhE6rv0146ZTQosoPDjk8", "57DlMWmbVIf2ssJ8QBpBau"]
+    # sample artist ids from call to /artistsYouLike. 
+    # Replace with request body retrieval / URL data
+    artists = ["7kk9WfnMdCB0K2oEz1ISYD","10erGh5UbLL0KsXf1eRfGC",
+                "7jVv8c5Fj3E9VhNjxT4snq","6cqXqS5Iemewz8MolkBTdY",
+                "0BT8c47gNjriVYP4vMUe9v","4gwpcMTbLWtBUlOijbVpuu",
+                "28lO8lCOqFvDB5la90xKUW","6AjW1aE0OlIoRGdnwbHgP2",
+                "3VbB6AbCIBTjy7tS2ha410","1Y5AYn8VTrTR3f8HXQQQug",
+                "189oT2Q0iCTjqIA8Oqu2fx","246dkjvS1zLTtiykXe5h60",
+                "2QOIawHpSlOwXDvSqQ9YJR","5K4W6rqBFWDnAN6FQUkS6x",
+                "6aXEStrH1JobocPqZ3XLeW","3Ww8GMbCDMAGwJJ2hd7z7z",
+                "292sg99iIOc93zcd30r4Oz","3Op7D6tFVJCOHW6EAV0ck1",
+                "5gOgXi3bI04vka9LmISO1G","6vz9KUVgEo1gXIobqiwJ15"]
+    
     tracks = []
 
     for artist in artists:
@@ -205,17 +216,41 @@ def addToPlaylist():
         return redirect("/login")
     
     sp = spotipy.Spotify(auth=token_info['access_token'])
-    user_id = sp.current_user()['id']
     playlist_id = "1odL3hqdHz7OLpNuSCIPmY" # for testing
     
-    # for testing
-    test_tracks = ["spotify:track:76QV2O1M2RQ2Hr7CE9FZYn", 
-              "spotify:track:3hO9ffiClRgUDtaVmjhlUK", 
-              "spotify:track:6ZJshGOUgjgX714b8STRrs"]
+    # sample tracks from call to /getTracksFromArtists.
+    # Replace with request body retrieval / URL data
+    test_tracks = ["spotify:track:1zZK2VSV3hywsKWwJzZoyi", "spotify:track:0tmHYs1StVJP38j8kuHHj4",
+                    "spotify:track:2S8JdROxVVL4auiFkzr6mc","spotify:track:1SC5rEoYDGUK4NfG82494W",
+                    "spotify:track:2YpeDb67231RjR0MgVLzsG","spotify:track:0F7FA14euOIX8KcbEturGH",
+                    "spotify:track:5PGmV8qPfRbHc76LIMkCTv","spotify:track:58LzXtlKG07waYQjSG0rFp",
+                    "spotify:track:2s1xecLywCRK5sE03md9da","spotify:track:4mikQuKYBRYqwZ4mxOFbtT",
+                    "spotify:track:7843tZFBpDbHt8h1Hqi6tU","spotify:track:0V2VVbM3D2vYzwEexAREjw",
+                    "spotify:track:3dY1DlC1nDUDtiIKaQ0Ynu","spotify:track:6tXtNrcKGZdaRlEwRuz4e0",
+                    "spotify:track:2Ijitr9PXxd3iSwrnK3eAE","spotify:track:2APCw2ZdDumK8vl6NZuBe8",
+                    "spotify:track:4IRwrnqPK6Ik29p6QS3t9d","spotify:track:2JoN55H0713j8D4PlGXgK4",
+                    "spotify:track:0woYKOagY34VuFUAKMvoMy","spotify:track:4rFsxbbkLBh8jswH4HxD7a",
+                    "spotify:track:5npIL1FmDdtzjLUpLUZ9w7","spotify:track:2L5ZLwbqYIBKq5ZdqUxgZg",
+                    "spotify:track:1rzXMehi59zCgIW38Txd6O","spotify:track:1Yd5sQRnDkKWRXDZnvFGhl",
+                    "spotify:track:0o8mdI1vf5ly2qpCxNJlC1","spotify:track:5uI7OuSoyjSZvfLFhWTSaw",
+                    "spotify:track:0Mtjq8Q6Z7gPVhqKkUPHtI","spotify:track:5IZXB5IKAD2qlvTPJYDCFB",
+                    "spotify:track:2OzhQlSqBEmt7hmkYxfT6m","spotify:track:21jGcNKet2qwijlDFuPiPb",
+                    "spotify:track:3Dgmyz32dxvtxvUTPS0CUI","spotify:track:0ROMalDdNg3L2HoZP4qFyJ",
+                    "spotify:track:7HB1REjjalFLSXgXlAAwFs","spotify:track:4EWCNWgDS8707fNSZ1oaA5",
+                    "spotify:track:5TRPicyLGbAF2LGBFbHGvO","spotify:track:4OssqCixV2Xsxd43wMIQyS",
+                    "spotify:track:4lZXwUlC7Xxw56QJGSOEKE","spotify:track:1evd9ocxQIiRwYlFDZmTjF",
+                    "spotify:track:159SoP5NrhRgvcV2Bzqego","spotify:track:2TmUt0ofWMa02MdYkKhK4C",
+                    "spotify:track:1mbLvyFNIifliPtmMmRQN9","spotify:track:4PtJNlcpEGyNAkYy44m5fI",
+                    "spotify:track:1KrpXYLMCJ8GaDSz61FQNU","spotify:track:3cLqK3LPVrTIzfENVmYLoU",
+                    "spotify:track:0iq3MFEbuKTWJgdhwdOwXI","spotify:track:2jnOUdpaFKr9koG1Vtbj6v",
+                    "spotify:track:2vJXkBYTfhmszE7ggfDc9E","spotify:track:57scbUX9utATbRFaYUWOnE",
+                    "spotify:track:3FoEL2ozgfVP8TlwjvjbNL","spotify:track:6qCbhkc1nXf7ltP5hzitPm",
+                    "spotify:track:52mwBczd6DywxW0yNeoZto","spotify:track:3ffUoOFNLBkHhQ9x0j8zkI",
+                    "spotify:track:5qGHMDEUWSn8vVRyIgGXTi","spotify:track:2dtkeMCTY4a7INBZ9ZteqX"]
 
-    retval = sp.playlist_add_items(playlist_id, test_tracks)
+    sp.playlist_add_items(playlist_id, test_tracks)
     
-    return jsonify({"message": "songs should be added", "return_val": retval})    
+    return jsonify({"message": "songs should be added"})    
 
 
 # Helper Functions
