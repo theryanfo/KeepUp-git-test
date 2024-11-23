@@ -161,14 +161,22 @@ def getTracksFromArtists():
         return redirect("/login")   
 
     sp = spotipy.Spotify(auth=token_info['access_token'])
-    liked = sp.current_user_saved_tracks(limit=5)
+    liked_ids = getLiked()
+    liked_ids = [track["track"]["id"] for track in liked_ids]
 
-    artists = []
+    # test artist values. Replace with request body retrieval / URL data
+    artists = ["2h93pZq0e7k5yf4dywlkpM", "1PhE6rv0146ZTQosoPDjk8", "57DlMWmbVIf2ssJ8QBpBau"]
     tracks = []
 
     for artist in artists:
+        added = 0
         top_tracks = sp.artist_top_tracks(artist_id=artist)
-        tracks.append("")
+        for track in top_tracks["tracks"]:
+            if track["id"] not in liked_ids:
+                tracks.append(track["uri"])
+                added += 1
+            if added >= 3:
+                break
 
     return tracks
 
@@ -198,8 +206,9 @@ def addToPlaylist():
     
     sp = spotipy.Spotify(auth=token_info['access_token'])
     user_id = sp.current_user()['id']
-    playlist_id = "1odL3hqdHz7OLpNuSCIPmY"
+    playlist_id = "1odL3hqdHz7OLpNuSCIPmY" # for testing
     
+    # for testing
     test_tracks = ["spotify:track:76QV2O1M2RQ2Hr7CE9FZYn", 
               "spotify:track:3hO9ffiClRgUDtaVmjhlUK", 
               "spotify:track:6ZJshGOUgjgX714b8STRrs"]
