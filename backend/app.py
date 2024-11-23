@@ -161,7 +161,14 @@ def getTracksFromArtists():
         return redirect("/login")   
 
     sp = spotipy.Spotify(auth=token_info['access_token'])
-    tracks = sp.current_user_saved_tracks(limit=5)
+    liked = sp.current_user_saved_tracks(limit=5)
+
+    artists = []
+    tracks = []
+
+    for artist in artists:
+        top_tracks = sp.artist_top_tracks(artist_id=artist)
+        tracks.append("")
 
     return tracks
 
@@ -178,10 +185,6 @@ def createPlaylist():
     user_id = sp.current_user()['id']
     playlist_id = sp.user_playlist_create(user=user_id, name="KeepUp", public=False, collaborative=False)["id"]
     
-
-    # tracks = ["0sPBKK9KTOmxIraDco7s3g", "3KmSMUwyrakryureTNI4U8", "2aBelqgKe00KNxc38vXmfQ"]
-    # sp.user_playlist_add_tracks(user_id, playlist_id, tracks)
-    
     return jsonify({"playlist_id": playlist_id})
 
 
@@ -197,14 +200,11 @@ def addToPlaylist():
     user_id = sp.current_user()['id']
     playlist_id = "1odL3hqdHz7OLpNuSCIPmY"
     
-
-    tracks = ["spotify:track:76QV2O1M2RQ2Hr7CE9FZYn", 
+    test_tracks = ["spotify:track:76QV2O1M2RQ2Hr7CE9FZYn", 
               "spotify:track:3hO9ffiClRgUDtaVmjhlUK", 
               "spotify:track:6ZJshGOUgjgX714b8STRrs"]
 
-    #tracks = ["0sPBKK9KTOmxIraDco7s3g", "3KmSMUwyrakryureTNI4U8", "2aBelqgKe00KNxc38vXmfQ"]
-
-    retval = sp.playlist_add_items(playlist_id, tracks)
+    retval = sp.playlist_add_items(playlist_id, test_tracks)
     
     return jsonify({"message": "songs should be added", "return_val": retval})    
 
@@ -232,6 +232,25 @@ def get_token():
     # sp_oauth = create_spotify_oauth()
     # token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
     return token_info
+
+
+def getLiked():
+    try:
+        token_info = get_token()
+    except:
+        print("user not logged in")
+        return redirect("/login")
+    sp = spotipy.Spotify(auth=token_info['access_token'])
+    all_songs = []
+    i = 0
+    while True:
+        items = sp.current_user_saved_tracks(limit=50, offset=50 * i)['items']
+        i += 1
+        all_songs += items
+        if (len(items) < 50):
+            break
+    return all_songs
+
 
 # Run Application
 
