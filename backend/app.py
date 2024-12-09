@@ -10,7 +10,7 @@ import random
 load_dotenv()
 MAIN_REDIRECT_URL = "http://localhost:5173"
 app = Flask(__name__)
-# CORS(app)
+CORS(app)
 
 app.secret_key = os.getenv("SECRET_KEY")
 app.config['SESSION_COOKIE_NAME'] = 'spotify-keepup-session'
@@ -60,7 +60,7 @@ def redirectPage():
     code = request.args.get('code')
     token_info = sp_oauth.get_access_token(code, as_dict=True)
     session[TOKEN_INFO] = token_info
-    print(session)
+    # print(session)
     
     if TOKEN_INFO in session:
         print("SESSION TOKEN PRESENT")

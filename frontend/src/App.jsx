@@ -17,12 +17,12 @@ const App = () => {
   return (
     <div className="main-container">
       <LoginButton />
-      <LogoutButton />
+      
       <TestButton />
 
       {/* 
-      <TestButton />
-
+      
+      <LogoutButton />
       <NewPlaylist />
       <BlockedArtists />
       <BlockedTracks />
